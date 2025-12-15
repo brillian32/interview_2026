@@ -63,10 +63,10 @@ public:
 
 	// 提交任务：支持任意函数和参数，返回 future
 	template<class F, class... Args>
-	auto enqueue(F &&f, Args &&...args) ->  std::future<std::invoke_result_t<F,Args...>>
+	auto enqueue(F &&f, Args &&...args) -> std::future<std::invoke_result_t<F, Args...>>
 	{
 
-		using return_type = std::invoke_result_t<F,Args...>;
+		using return_type = std::invoke_result_t<F, Args...>;
 
 		// 将任务打包为 packaged_task，以便获取返回值
 		// 使用 shared_ptr 是为了能够拷贝进 lambda (std::function 要求可拷贝)
@@ -98,7 +98,7 @@ private:
 	bool stop; // 停止标志
 };
 
-void getAustral(std::mutex& mtx)
+void getAustral(std::mutex &mtx)
 {
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 	std::unique_lock lock(mtx);
@@ -115,7 +115,6 @@ TEST_CASE("Thread Pool")
 	auto result = pool.enqueue(
 		[&](int answer)
 		{
-
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 			std::unique_lock lock(mtx);
 			std::cout << "@1Task executed in thread " << std::this_thread::get_id() << " " << answer << std::endl;
@@ -124,11 +123,9 @@ TEST_CASE("Thread Pool")
 		11);
 
 
-
 	auto result2 = pool.enqueue(
 		[&](int answer)
 		{
-
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 			std::unique_lock lock(mtx);
 			std::cout << "@2Task executed in thread " << std::this_thread::get_id() << " " << answer << std::endl;
@@ -138,12 +135,13 @@ TEST_CASE("Thread Pool")
 
 
 	// 示例2：提交无返回值的任务
-	pool.enqueue([&]()
-	{
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		std::unique_lock lock(mtx);
-		std::cout << "@3Task executed in thread " << std::this_thread::get_id() << std::endl;
-	});
+	pool.enqueue(
+		[&]()
+		{
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+			std::unique_lock lock(mtx);
+			std::cout << "@3Task executed in thread " << std::this_thread::get_id() << std::endl;
+		});
 	pool.enqueue(getAustral, std::ref(mtx));
 
 	// 获取结果
@@ -156,7 +154,8 @@ TEST_CASE("Thread Pool")
 }
 
 // 极简版：不支持返回值，不支持传参（需用lambda捕获）
-class SimpleThreadPool {
+class SimpleThreadPool
+{
 	std::vector<std::thread> workers;
 	std::queue<std::function<void()>> tasks;
 	std::mutex mtx;
@@ -164,32 +163,45 @@ class SimpleThreadPool {
 	bool stop = false;
 
 public:
-	explicit SimpleThreadPool(size_t n) {
-		for(size_t i=0; i<n; ++i) {
-			workers.emplace_back([this]{
-				while(true) {
-					std::unique_lock<std::mutex> lock(mtx);
-					cv.wait(lock, [this]{ return stop || !tasks.empty(); });
-					if(stop && tasks.empty()) return;
+	explicit SimpleThreadPool(size_t n)
+	{
+		for (size_t i = 0; i < n; ++i) {
+			workers.emplace_back(
+				[this]
+				{
+					while (true) {
+						std::unique_lock<std::mutex> lock(mtx);
+						cv.wait(lock, [this] { return stop || !tasks.empty(); });
+						if (stop && tasks.empty())
+							return;
 
-					auto task = tasks.front();
-					tasks.pop();
-					lock.unlock(); // 记得解锁去执行！
-					task();
-				}
-			});
+						auto task = tasks.front();
+						tasks.pop();
+						lock.unlock(); // 记得解锁去执行！
+						task();
+					}
+				});
 		}
 	}
 
-	~SimpleThreadPool() {
-		{ std::unique_lock<std::mutex> lock(mtx); stop = true; }
+	~SimpleThreadPool()
+	{
+		{
+			std::unique_lock<std::mutex> lock(mtx);
+			stop = true;
+		}
 		cv.notify_all();
-		for(auto &t : workers) t.join();
+		for (auto &t : workers)
+			t.join();
 	}
 
 	// 提交任务很简单
-	void enqueue(const std::function<void()>& task) {
-		{ std::unique_lock<std::mutex> lock(mtx); tasks.push(task); }
+	void enqueue(const std::function<void()> &task)
+	{
+		{
+			std::unique_lock<std::mutex> lock(mtx);
+			tasks.push(task);
+		}
 		cv.notify_one();
 	}
 };
@@ -197,6 +209,6 @@ public:
 TEST_CASE("Simple Thread Pool")
 {
 	SimpleThreadPool pool(4);
-	pool.enqueue([](){ std::cout << "@1Task executed in thread " << std::this_thread::get_id() << std::endl; });
-	pool.enqueue([](){ std::cout << "@2Task executed in thread " << std::this_thread::get_id() << std::endl; });
+	pool.enqueue([]() { std::cout << "@1Task executed in thread " << std::this_thread::get_id() << std::endl; });
+	pool.enqueue([]() { std::cout << "@2Task executed in thread " << std::this_thread::get_id() << std::endl; });
 }
