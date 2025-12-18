@@ -14,7 +14,9 @@ if (MSVC)
 endif()
 
 add_executable(Interview
-        ThreadPool.cpp
+        src/ThreadPool.cpp
+        src/list.cpp
+        src/main.cpp
 )
 
 

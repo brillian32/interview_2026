@@ -11,10 +11,9 @@
 #include <stdexcept>
 #include <thread>
 #include <vector>
+#include <iostream>
 
-#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include "doctest/doctest.h"
-
 
 class ThreadPool
 {
@@ -63,9 +62,9 @@ public:
 
 	// 提交任务：支持任意函数和参数，返回 future
 	template<class F, class... Args>
+	//...arg封包，Args 在里面已经被“按类型展开”过了，只是你没看到显式的 Args... 写出来而已。
 	auto enqueue(F &&f, Args &&...args) -> std::future<std::invoke_result_t<F, Args...>>
 	{
-
 		using return_type = std::invoke_result_t<F, Args...>;
 
 		// 将任务打包为 packaged_task，以便获取返回值
