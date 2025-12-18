@@ -26,3 +26,7 @@ LRU Cache (LeetCode 146) - 必背。
 3. C++ String 类实现 - 必须掌握深拷贝和 Move 语义。
 4. 单例模式 - 必须掌握线程安全写法。
 把这 5 个搞定，心里就有底了，然后再去刷 Hot 100 中的 Tree 和 DP 题目。
+
+![img.png](img.png)
+
+![img_1.png](img_1.png)
