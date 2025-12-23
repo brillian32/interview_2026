@@ -17,6 +17,7 @@ add_executable(Interview
         src/ThreadPool.cpp
         src/list.cpp
         src/main.cpp
+        src/LRU.cpp
 )
 
 
@@ -24,4 +25,8 @@ target_link_libraries(
         Interview
         PRIVATE
         doctest::doctest
+)
+
+target_precompile_headers(Interview PUBLIC
+        src/Common.h
 )

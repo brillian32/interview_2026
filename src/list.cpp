@@ -3,7 +3,6 @@
 //
 
 #include <doctest/doctest.h>
-#include <iostream>
 
 /**
  * Definition for singly-linked list.

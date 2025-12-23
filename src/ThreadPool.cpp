@@ -11,7 +11,6 @@
 #include <stdexcept>
 #include <thread>
 #include <vector>
-#include <iostream>
 
 #include "doctest/doctest.h"
 
