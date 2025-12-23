@@ -18,6 +18,7 @@ add_executable(Interview
         src/list.cpp
         src/main.cpp
         src/LRU.cpp
+        src/Singleton.cpp
 )
 
 
