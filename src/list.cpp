@@ -8,7 +8,8 @@
 /**
  * Definition for singly-linked list.
  */
-struct ListNode {
+struct ListNode
+{
 	int val;
 	ListNode *next;
 	ListNode() : val(0), next(nullptr) {}
@@ -16,11 +17,13 @@ struct ListNode {
 	ListNode(const int x, ListNode *next) : val(x), next(next) {}
 };
 
-class Solution {
+class Solution
+{
 public:
-	//双指针实现
-	static ListNode* reverseList(ListNode* head) {
-		ListNode * pre = nullptr;
+	// 双指针实现
+	static ListNode *reverseList(ListNode *head)
+	{
+		ListNode *pre = nullptr;
 		auto cur = head;
 		while (cur != nullptr) {
 			const auto tmp = cur->next;
@@ -32,11 +35,10 @@ public:
 	}
 
 	// 递归方法实现
-	static ListNode* reverseListV2(ListNode* head) {
-		return rescur(head, nullptr);
-	}
+	static ListNode *reverseListV2(ListNode *head) { return rescur(head, nullptr); }
 
-	static ListNode * rescur(ListNode* cur, ListNode* pre) {
+	static ListNode *rescur(ListNode *cur, ListNode *pre)
+	{
 		if (cur == nullptr) {
 			return pre;
 		}
@@ -46,7 +48,7 @@ public:
 	}
 };
 
-//https://leetcode.cn/problems/reverse-linked-list/?envType=study-plan-v2&envId=top-100-liked
+// https://leetcode.cn/problems/reverse-linked-list/?envType=study-plan-v2&envId=top-100-liked
 TEST_CASE("reverse List")
 {
 	auto head = new ListNode(1);
