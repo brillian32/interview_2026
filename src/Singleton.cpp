@@ -10,6 +10,7 @@ public:
 	// 获取单例引用的静态方法
 	static Singleton& getInstance() {
 		// C++11 保证：局部静态变量初始化是线程安全的
+		// 对比： 在 C++98 时代，这行代码是不安全的，需要用双重检查锁（DCL, Double-Checked Locking）加上 mutex 和 lock，代码非常臃肿且容易出错。
 		static Singleton instance;
 		return instance;
 	}
