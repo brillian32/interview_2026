@@ -83,16 +83,29 @@ public:
  * obj->put(key,value);
  */
 
+// LRUCache lRUCache = new LRUCache(2);
+// lRUCache.put(1, 1); // 缓存是 {1=1}
+// lRUCache.put(2, 2); // 缓存是 {1=1, 2=2}
+// lRUCache.get(1);    // 返回 1
+// lRUCache.put(3, 3); // 该操作会使得关键字 2 作废，缓存是 {1=1, 3=3}
+// lRUCache.get(2);    // 返回 -1 (未找到)
+// lRUCache.put(4, 4); // 该操作会使得关键字 1 作废，缓存是 {4=4, 3=3}
+// lRUCache.get(1);    // 返回 -1 (未找到)
+// lRUCache.get(3);    // 返回 3
+// lRUCache.get(4);    // 返回 4
+
 
 TEST_CASE("LRU Cache")
 {
-	auto* obj = new LRUCache(2);
-	obj->put(1,11);
-	obj->put(2,22);
-	obj->put(2,222);
-	obj->put(3,33);
-	CHECK(obj->get(3) == 33);
-	CHECK(obj->get(1) == -1);
-	CHECK(obj->get(2) == 222);
-	delete obj;
+	auto lRUCache = new LRUCache(2);
+	lRUCache->put(1, 1);
+	lRUCache->put(2, 2);
+	CHECK(lRUCache->get(1) == 1);
+	lRUCache->put(3, 3);
+	CHECK(lRUCache->get(2) == -1);
+	lRUCache->put(4, 4);
+	CHECK(lRUCache->get(1) == -1);
+	CHECK(lRUCache->get(3) == 3);
+	CHECK(lRUCache->get(4) == 4);
+	delete lRUCache;
 }
