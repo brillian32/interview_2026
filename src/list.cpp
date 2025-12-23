@@ -32,6 +32,18 @@ public:
 	}
 
 	// 递归方法实现
+	static ListNode* reverseListV2(ListNode* head) {
+		return rescur(head, nullptr);
+	}
+
+	static ListNode * rescur(ListNode* cur, ListNode* pre) {
+		if (cur == nullptr) {
+			return pre;
+		}
+		const auto tmp = cur->next;
+		cur->next = pre;
+		return rescur(tmp, cur);
+	}
 };
 
 //https://leetcode.cn/problems/reverse-linked-list/?envType=study-plan-v2&envId=top-100-liked
