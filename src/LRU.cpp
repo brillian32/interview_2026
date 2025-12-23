@@ -32,8 +32,8 @@ class LRUCache
 {
 private:
 	int m_capacity;
-	std::list<std::pair<int, int>> m_list;
-	std::unordered_map<int, std::list<std::pair<int, int>>::iterator> m_umap;
+	std::list<std::pair<int, int>> m_list; // 链表存储 键值对
+	std::unordered_map<int, std::list<std::pair<int, int>>::iterator> m_umap; // 哈希表存储 键和节点的映射
 
 public:
 	explicit LRUCache(int capacity) : m_capacity(capacity) {}
@@ -46,7 +46,7 @@ public:
 			return -1;  // 键不存在，返回-1
 		}
 
-		// 将访问的节点移动到链表头部（表示最近使用）
+		// 将访问的节点移动到链表头部（表示最近使用） 不存在迭代器失效
 		m_list.splice(m_list.begin(), m_list, val->second);
 		return val->second->second;  // 返回对应值
 	}
@@ -59,6 +59,8 @@ public:
 			auto _iter = iter->second;
 			_iter->second = value;  // 更新节点中的值
 			m_list.splice(m_list.begin(), m_list, _iter); // 移动到链表最前面（最近使用）
+			// std::cout << "update" << key << ":" << value << std::endl;
+			// std::cout << "update" << _iter->first << ":" << _iter->second << std::endl;
 			return;
 		}
 
@@ -82,4 +84,15 @@ public:
  */
 
 
-TEST_CASE("LRU Cache") {}
+TEST_CASE("LRU Cache")
+{
+	auto* obj = new LRUCache(2);
+	obj->put(1,11);
+	obj->put(2,22);
+	obj->put(2,222);
+	obj->put(3,33);
+	CHECK(obj->get(3) == 33);
+	CHECK(obj->get(1) == -1);
+	CHECK(obj->get(2) == 222);
+	delete obj;
+}
