@@ -40,29 +40,36 @@ public:
 
 	int get(int key)
 	{
+		// 在哈希表中查找key对应的迭代器
 		auto val = m_umap.find(key);
 		if (val == m_umap.end()) {
-			return -1;
+			return -1;  // 键不存在，返回-1
 		}
-		m_list.splice(m_list.begin(), m_list, val->second); // 移动到链表最前面
-		return val->second->second;
+
+		// 将访问的节点移动到链表头部（表示最近使用）
+		m_list.splice(m_list.begin(), m_list, val->second);
+		return val->second->second;  // 返回对应值
 	}
 
 	void put(int key, int value)
 	{
 		auto iter = m_umap.find(key);
 		if (iter != m_umap.end()) {
+			// 键已存在，更新值并将节点移到链表头部
 			auto _iter = iter->second;
-			_iter->second = value;
-			m_list.splice(m_list.begin(), m_list, _iter); // 移动到链表最前面
+			_iter->second = value;  // 更新节点中的值
+			m_list.splice(m_list.begin(), m_list, _iter); // 移动到链表最前面（最近使用）
 			return;
 		}
-		m_list.emplace_front(key, value);
-		m_umap[key] = m_list.begin();
 
+		// 键不存在，插入新节点到链表头部
+		m_list.emplace_front(key, value);  // 在链表头部插入新键值对
+		m_umap[key] = m_list.begin();      // 在哈希表中记录key到新节点的映射
+
+		// 如果超出容量，删除最久未使用的节点（链表尾部）
 		if (m_capacity < m_list.size()) {
-			m_umap.erase(m_list.back().first);
-			m_list.pop_back();
+			m_umap.erase(m_list.back().first);  // 从哈希表中删除对应的键
+			m_list.pop_back();                  // 从链表中删除尾部节点
 		}
 	}
 };

@@ -20,7 +20,7 @@
 
 
 
-[LRU Cache (LeetCode 146) - 必背。](src/LRU.cpp)
+[LRU Cache (LeetCode 146) - 必会](src/LRU.cpp)
 
 1. 快速排序 & 归并排序 - 必背。
 2. 反转链表 (LeetCode 206) - 必须 1 分钟内写完且 0 Bug。
