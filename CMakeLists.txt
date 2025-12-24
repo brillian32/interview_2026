@@ -21,6 +21,8 @@ add_executable(Interview
         src/Singleton.cpp
         src/DoubelLockSingleton.cpp
         src/MyString.cpp
+        src/tree.h.cpp
+        src/mem.cpp
 )
 
 
