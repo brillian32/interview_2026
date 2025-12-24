@@ -104,17 +104,19 @@ public:
         return os;
     }
 
-	// 在类内部添加
-	void swap(String& other) noexcept {
-    	std::swap(m_data, other.m_data);
-    	std::swap(m_len, other.m_len);
-    }
+
 
 	//att 面试加分项：Copy-and-Swap 技术
 	// 统一的赋值运算符 (取代了上面的 拷贝赋值 和 移动赋值)
 	// 注意参数是传值 (String other)，这会调用构造函数（拷贝或移动）
-
-	// String& operator=(String other) {
+	// att 只要你的类涉及资源管理，请务必将移动构造、移动赋值以及自定义的 swap 函数全部标记为 noexcept。
+	// 在类内部添加
+	// void swap(String& other) noexcept {
+ //    	std::swap(m_data, other.m_data);
+ //    	std::swap(m_len, other.m_len);
+ //    }
+ //
+	// String& operator=(String other) noexcept{
  //    	// 交换 this 和 临时对象 other 的资源
  //    	swap(other);
  //    	// 函数结束时，other 析构，自动释放了 this 原有的内存
@@ -129,7 +131,7 @@ class MString
 	int m_len = 0;
 	char* m_str = nullptr;
 public:
-	MString(const char * str = nullptr)
+	explicit MString(const char * str = nullptr)
 	{
 		if (str == nullptr) {
 			m_len = 0;
@@ -150,13 +152,53 @@ public:
 		strcpy(m_str,other.m_str);
 	}
 
-	MString(MString&& other)
-	{
+	MString(MString&& other) noexcept
+  	{
 		m_len = other.m_len;
 		m_str = other.m_str;
 
 		other.m_str = nullptr;
 		other.m_len = 0;
+	}
+
+	MString& operator=(const MString& other)
+	{
+		if (&other==this) {
+			return *this;
+		}
+
+		delete[] m_str;
+
+		m_str = new char[other.m_len+1];
+		strcpy(m_str,other.m_str);
+		m_len = other.m_len;
+		return *this;
+	}
+
+	MString& operator=(MString&& other) noexcept
+	{
+		if (&other==this) {
+			return *this;
+		}
+
+		delete[] m_str;
+
+		m_str = other.m_str;
+		m_len = other.m_len;
+
+		other.m_str = nullptr;
+		other.m_len = 0;
+
+		return *this;
+	}
+
+	~MString()
+	{
+		if (m_str) {
+			delete[] m_str;
+			m_str = nullptr;
+		}
+		// m_len = 0;
 	}
 };
 
