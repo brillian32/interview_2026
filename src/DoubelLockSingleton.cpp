@@ -36,7 +36,7 @@ public:
         // memory_order_acquire 保证在此之前的读写操作不会被重排到此之后
         Singleton* tmp = instance.load(std::memory_order_acquire);
 
-        if (tmp == nullptr) {  //att 为什么要第一个 if？（为了性能）
+        if (tmp == nullptr) {  //att 为什么要第一个 if？（为了性能） 如果不为空，直接返回，避免不必要的加锁开销
             // 加锁
             std::lock_guard<std::mutex> lock(mtx);
 

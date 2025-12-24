@@ -14,7 +14,7 @@
 ### 基础轮子
 1. 手写String类
 2. [手写线程池](src/ThreadPool.cpp)
-3. 单例模式优雅实现
+3. [单例模式优雅实现](src/Singleton.cpp) / [双重检查实现](src/DoubelLockSingleton.cpp)
 4. 内存相关函数(memcpy / memmove)
 5. 手写智能指针
 
