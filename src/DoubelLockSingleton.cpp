@@ -6,6 +6,13 @@
 #include <iostream>
 #include <mutex>
 
+// instance = new Singleton(); 这行代码在 CPU 和编译器眼里，分为三步：
+//
+// 分配内存 (Allocate memory)。
+// 在内存上调用构造函数 (Construct object)。
+// 将内存地址赋值给 instance 指针 (Assign pointer)。
+// 没有 std::atomic 和内存序约束时，编译器或 CPU 允许将步骤重排为：1 -> 3 -> 2。
+
 class Singleton {
 private:
     // 1. 私有化构造函数，防止外部创建
@@ -29,14 +36,15 @@ public:
         // memory_order_acquire 保证在此之前的读写操作不会被重排到此之后
         Singleton* tmp = instance.load(std::memory_order_acquire);
 
-        if (tmp == nullptr) {
+        if (tmp == nullptr) {  //att 为什么要第一个 if？（为了性能）
             // 加锁
             std::lock_guard<std::mutex> lock(mtx);
 
             // 第二重检查：再次读取，防止在等待锁的期间已被其他线程创建
             tmp = instance.load(std::memory_order_relaxed);
 
-            if (tmp == nullptr) {
+            if (tmp == nullptr) { //att 为什么要第二个 if？（为了线程安全）防止多次创建
+            	                  //线程 B 在 T5 时刻拿到锁进入后，会再次检查 if (instance == nullptr)。此时它会发现 instance 已经被 A 初始化了，于是跳过创建，直接返回
                 // 创建实例
                 tmp = new Singleton();
 
