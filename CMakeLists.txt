@@ -20,6 +20,7 @@ add_executable(Interview
         src/LRU.cpp
         src/Singleton.cpp
         src/DoubelLockSingleton.cpp
+        src/MyString.cpp
 )
 
 
